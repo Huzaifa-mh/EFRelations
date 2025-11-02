@@ -1,4 +1,8 @@
 ﻿{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=MUHAMMADHUZAIFA\\SQLEXPRESS;Database=EFRelations;Trusted_Connection=true;TrustServerCertificate=true;"
+  },
+    
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
     "http": {
