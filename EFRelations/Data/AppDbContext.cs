@@ -10,6 +10,10 @@ namespace EFRelations.Data
 
         public DbSet<Blog> Blogs => Set<Blog>();
         public DbSet<Post> Posts => Set<Post>();
+
+        public DbSet<Student> Students => Set<Student>();
+        public DbSet<Course> Courses => Set<Course>();
+        public DbSet<CourseStudent> CourseStudents => Set<CourseStudent>();
     }
 
 }
