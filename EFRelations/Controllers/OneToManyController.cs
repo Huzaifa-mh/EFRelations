@@ -18,6 +18,7 @@ namespace EFRelations.Controllers
             await context.SaveChangesAsync();
             return Ok();
         }
+
         [HttpGet("get-blogs")]
         public async Task<IActionResult> GetBlogs()
         {
