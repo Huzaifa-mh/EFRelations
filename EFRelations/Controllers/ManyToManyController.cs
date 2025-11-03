@@ -8,8 +8,10 @@ namespace EFRelations.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class ManyToManyController(AppDbContext context) : ControllerBase
     {
+
         [HttpPost("add-student")]
         public async Task<IActionResult> CreateStudent(Student student)
         {
@@ -34,6 +36,7 @@ namespace EFRelations.Controllers
             await context.SaveChangesAsync();
             return Ok();
         }
+
         [HttpGet("get-courses")]
         public async Task<IActionResult> GetCourses()
         {
