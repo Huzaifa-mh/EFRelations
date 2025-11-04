@@ -11,6 +11,7 @@
         //nested dto
         public ProfileDto Profile { get; set; }
     }
+
     public class ProfileDto
     {
         public int Id { get; set; }
