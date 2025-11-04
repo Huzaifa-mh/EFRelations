@@ -13,6 +13,7 @@ namespace EFRelations.Controllers
     //we are doing the relations with navigation and conversion property
     public class OneToOneController(AppDbContext context) : ControllerBase
     {
+
         [HttpPost("add-user")]
         public async Task<IActionResult> CreateUser(User user)
         {
@@ -20,7 +21,33 @@ namespace EFRelations.Controllers
             await context.SaveChangesAsync();
             return Ok();
         }
+        //optimize add-user using DTO 
+        [HttpPost("add-userDto")]
+        public async Task<IActionResult> CreateUserDto(UserDto userDto)
+        {
+            if(userDto == null)
+            {
+                return BadRequest("Invalid user data");
+            }
 
+            var user = new User
+            {
+                Username = userDto.Username,
+                Profile = userDto.Profile == null ? null : new Profile
+                {
+                    Bio = userDto.Profile.Bio
+                }
+            };
+            context.Users.Add(user);
+
+            var result = new UserDto
+            {
+                Id = user.Id,
+                Username = user.Username
+            };
+
+            return CreatedAtAction(nameof(GetUserById), new { Id = user.Id }, result);
+        }
 
         [HttpGet("get-user")]
         public async Task<IActionResult> GetUser()
