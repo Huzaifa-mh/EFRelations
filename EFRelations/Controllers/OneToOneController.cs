@@ -22,32 +22,29 @@ namespace EFRelations.Controllers
             return Ok();
         }
         //optimize add-user using DTO 
-        [HttpPost("add-userDto")]
-        public async Task<IActionResult> CreateUserDto(UserDto userDto)
-        {
-            if(userDto == null)
-            {
-                return BadRequest("Invalid user data");
-            }
+        //[HttpPost("add-userDto")]
+        //public async Task<IActionResult> CreateUserDto(UserDto userDto)
+        //{
+        //    if(userDto == null)
+        //    {
+        //        return BadRequest("Invalid user data");
+        //    }
 
-            var user = new User
-            {
-                Username = userDto.Username,
-                Profile = userDto.Profile == null ? null : new Profile
-                {
-                    Bio = userDto.Profile.Bio
-                }
-            };
-            context.Users.Add(user);
+        //    var user = new User
+        //    {
+        //        Username = userDto.Username,
 
-            var result = new UserDto
-            {
-                Id = user.Id,
-                Username = user.Username
-            };
+        //    };
+        //    context.Users.Add(user);
 
-            return CreatedAtAction(nameof(GetUserById), new { Id = user.Id }, result);
-        }
+        //    var result = new UserDto
+        //    {
+        //        Id = user.Id,
+        //        Username = user.Username
+        //    };
+
+        //    return CreatedAtAction(nameof(GetUserById), new { Id = user.Id }, result);
+        //}
 
         [HttpGet("get-user")]
         public async Task<IActionResult> GetUser()
@@ -128,7 +125,34 @@ namespace EFRelations.Controllers
         [HttpGet("get-profiles")]
         public async Task<IActionResult> GetProfile()
         {
-            return Ok(await context.Profiles.Include(x => x.User).ToListAsync());
+            //return Ok(await context.Profiles.Include(x => x.User).ToListAsync());
+
+            var profile = await context.Profiles.Include(p => p.User).Select(p => MapProfile(p)).ToListAsync();
+
+            return Ok(profile);
+        }
+
+        [HttpGet("get-profile/{id}")]
+        public async Task<IActionResult> GetProfileById(int id)
+        {
+            //return Ok(await context.Profiles.Include(x => x.User).ToListAsync());
+
+            var profile = await context.Profiles.Include(p => p.User).Where(x => id == x.Id).Select(p => MapProfile(p)).FirstOrDefaultAsync();
+
+            if (profile == null)
+                return BadRequest("profile not found");
+
+            return Ok(profile);
+        }
+
+        private static ProfileDto MapProfile(Profile p)
+        {
+            return new ProfileDto
+            {
+                Id = p.Id,
+                Bio = p.Bio,
+                Username = p.User != null ? p.User.Username : null
+            };
         }
 
     }
