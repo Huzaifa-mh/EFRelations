@@ -22,29 +22,24 @@ namespace EFRelations.Controllers
             return Ok();
         }
         //optimize add-user using DTO 
-        //[HttpPost("add-userDto")]
-        //public async Task<IActionResult> CreateUserDto(UserDto userDto)
-        //{
-        //    if(userDto == null)
-        //    {
-        //        return BadRequest("Invalid user data");
-        //    }
+        [HttpPost("add-userDto")]
+        public async Task<IActionResult> CreateUserDto(UserDto userDto)
+        {
+            if (userDto == null)
+            {
+                return BadRequest("Invalid user data");
+            }
 
-        //    var user = new User
-        //    {
-        //        Username = userDto.Username,
+            var user = new User
+            {
+                Username = userDto.Username,
 
-        //    };
-        //    context.Users.Add(user);
+            };
+            context.Users.Add(user);
+            await context.SaveChangesAsync();
 
-        //    var result = new UserDto
-        //    {
-        //        Id = user.Id,
-        //        Username = user.Username
-        //    };
-
-        //    return CreatedAtAction(nameof(GetUserById), new { Id = user.Id }, result);
-        //}
+            return Ok();
+        }
 
         [HttpGet("get-user")]
         public async Task<IActionResult> GetUser()
@@ -108,16 +103,28 @@ namespace EFRelations.Controllers
                 Profile = x.Profile == null ? null : new ProfileDto
                 {
                     Id = x.Profile.Id,
-                    Bio = x.Profile.Bio,
-                    Username = x.Username
-
+                    Bio = x.Profile.Bio
                 }
             };
         }
 
         [HttpPost("add-profile")]
-        public async Task<IActionResult> CreateProfile(Profile profile)
+        public async Task<IActionResult> CreateProfile(ProfileDto profileDto)
         {
+            //context.Profiles.Add(profile);
+            //await context.SaveChangesAsync();
+            //return Ok();
+
+            var user = await context.Users.FindAsync(profileDto.UserId);
+            if (user == null)
+                return BadRequest("User not found");
+
+            var profile = new Profile
+            {
+                Id = profileDto.Id,
+                Bio = profileDto.Bio
+            };
+
             context.Profiles.Add(profile);
             await context.SaveChangesAsync();
             return Ok();
@@ -150,8 +157,7 @@ namespace EFRelations.Controllers
             return new ProfileDto
             {
                 Id = p.Id,
-                Bio = p.Bio,
-                Username = p.User != null ? p.User.Username : null
+                Bio = p.Bio
             };
         }
 
