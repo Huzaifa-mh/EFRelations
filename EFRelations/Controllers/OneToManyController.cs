@@ -1,4 +1,5 @@
 ﻿using EFRelations.Data;
+using EFRelations.DTOs;
 using EFRelations.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,10 +20,29 @@ namespace EFRelations.Controllers
             return Ok();
         }
 
+
+
         [HttpGet("get-blogs")]
         public async Task<IActionResult> GetBlogs()
         {
-            return Ok(await context.Blogs.Include(x => x.Posts).ToListAsync());
+            //return Ok(await context.Blogs.Include(x => x.Posts).ToListAsync());
+
+            //update it using the mapping DTO
+
+            var blogs = await context.Blogs.Include(b => b.Posts).Select(b => new BlogDto
+            {
+                Id = b.Id,
+                Title = b.Title,
+                Post = b.Posts.Select(p => new PostDto
+                {
+                    Id = p.Id,
+                    Content = p.Content,
+                    BlogId = p.BlogId
+                }).ToList()
+            })
+            .ToListAsync();
+
+            return Ok(blogs);
         }
 
         [HttpPost("add-post")]
