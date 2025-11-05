@@ -67,7 +67,7 @@ namespace EFRelations.Controllers
         [HttpGet("get-user/{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return BadRequest("The id is not defined properly");
             }
@@ -118,6 +118,7 @@ namespace EFRelations.Controllers
             var user = await context.Users.FindAsync(profileDto.UserId);
             if (user == null)
                 return BadRequest("User not found");
+
 
             var profile = new Profile
             {
