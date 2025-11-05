@@ -9,7 +9,7 @@
         public int Id { get; set; } 
         public string? Title { get; set; }
 
-        public List<PostDto> Post { get; set; }
+        public List<PostDto>? Post { get; set; }
     }
 
     public class PostDto

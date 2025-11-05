@@ -13,10 +13,24 @@ namespace EFRelations.Controllers
     {
 
         [HttpPost("add-blog")]
-        public async Task<IActionResult> CreateBlog(Blog blog)
+        public async Task<IActionResult> CreateBlog(BlogDto blogDto)
         {
+            //context.Blogs.Add(blog);
+            //await context.SaveChangesAsync();
+            //return Ok();
+
+            if (blogDto == null)
+                return BadRequest("Invalid Data");
+
+            var blog = new Blog
+            {
+                Title = blogDto.Title
+              
+            };
+
             context.Blogs.Add(blog);
             await context.SaveChangesAsync();
+
             return Ok();
         }
 
@@ -46,10 +60,25 @@ namespace EFRelations.Controllers
         }
 
         [HttpPost("add-post")]
-        public async Task<IActionResult> CreatePost(Post post)
+        public async Task<IActionResult> CreatePost(PostDto postDto)
         {
+            //context.Posts.Add(post);
+            //await context.SaveChangesAsync();
+            //return Ok();
+
+            var blog = await context.Blogs.FindAsync(postDto.BlogId);
+            if (blog == null)
+                return BadRequest("Blog not found");
+
+            var post = new Post
+            {
+                Content = postDto.Content,
+                BlogId = postDto.BlogId
+            };
+
             context.Posts.Add(post);
             await context.SaveChangesAsync();
+
             return Ok();
         }
 
