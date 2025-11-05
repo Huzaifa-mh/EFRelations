@@ -56,7 +56,16 @@ namespace EFRelations.Controllers
         [HttpGet("get-posts")]
         public async Task<IActionResult> GetPosts()
         {
-            return Ok(await context.Posts.Include(x => x.Blog).ToListAsync());
+            //return Ok(await context.Posts.Include(x => x.Blog).ToListAsync());
+
+            var post = await context.Posts.Include(p => p.Blog).Select(p => new PostDto
+            {
+                Id = p.Id,
+                Content = p.Content,
+                BlogId = p.BlogId
+            }).ToListAsync();
+
+            return Ok(post);
         }
     }
 }
